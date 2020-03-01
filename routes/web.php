@@ -23,22 +23,28 @@ Route::get('/negado', function () {
     return 'Acesso negado';
 })->name('negado');
 
+Route::get('/negadologin', function() {
+    return 'Prezado usuário, você precisa ser administrador para acessar este conteúdo';
+})->name('negadologin');
+
 Route::post('/login', function (Request $req) {
 
     $login_ok = false;
+    $admin = false;
 
     switch($req->input('user')) {
         case 'joao':
             $login_ok = $req->input('passwd') === "senhajoao";
-        break;
+            $admin = true;
+            break;
         case 'marcos':
             $login_ok = $req->input('passwd') === "senhamarcos";
-        break;
+            break;
         case 'default':
             $login_ok = false;
     }
     if($login_ok) {
-        $login = [ 'user' => $req->input('user') ];
+        $login = [ 'user' => $req->input('user'), 'admin' => $admin ];
         $req->session()->put('login', $login);
         return response('Login ok', 200);
     } else {
